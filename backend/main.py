@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from backend.haystackpipeline.utils import generate_quiz # import the generate_quiz function
 
 # Create FastAPI instance
@@ -23,22 +24,24 @@ app.add_middleware(
 # def upload_link(link: str):
 #     return JSONResponse(content={"link": link}, status_code=200)
 
-# POST endpoint to accept a link and generate a questionnaire
-@app.post("/link", description="Upload a link to generate a questionnaire")
-def upload_link(link: str):
+class URLInput(BaseModel):
+    url: str
+
+@app.post("/generate-quiz", description="Generate a quiz from a given URL")
+async def generate_quiz_endpoint(input: URLInput):
     try:
-        # Debugging: log the link received
-        print(f"Received link: {link}")
+        # Debugging: log the URL received
+        print(f"Received URL: {input.url}")
         
-        # Call the generate_quiz function with the provided link
-        quiz_data = generate_quiz(link)
+        # Call the generate_quiz function with the provided URL
+        quiz_data = generate_quiz(input.url)
         
         # Debugging: log the quiz data
         print(f"Generated quiz: {quiz_data}")
         
-        # # Check if the quiz data is valid
-        # if not quiz_data.get('quiz'):
-        #     raise HTTPException(status_code=500, detail="Quiz generation failed or returned empty data.")
+        # Check if the quiz data is valid
+        if not quiz_data:
+            raise HTTPException(status_code=500, detail="Quiz generation failed or returned empty data.")
         
         # Return the generated quiz data in the response
         return JSONResponse(content=quiz_data, status_code=200)
