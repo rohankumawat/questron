@@ -59,69 +59,69 @@ quiz_generation_pipeline.connect("prompt_builder", "generator")
 quiz_generation_pipeline.connect("generator", "quiz_parser")
 
 
-closed_book_template = """Answer the following question, specifying one of the options.
-The topic is: {{ topic }}.
+# closed_book_template = """Answer the following question, specifying one of the options.
+# The topic is: {{ topic }}.
 
-In the answer, just specify the letter corresponding to the option.
-If you don't know the answer, just provide your best guess and do not provide any reasoning.
+# In the answer, just specify the letter corresponding to the option.
+# If you don't know the answer, just provide your best guess and do not provide any reasoning.
 
-For example, if you think the answer is the first option, just write "a".
-If you think the answer is the second option, just write "b", and so on.
+# For example, if you think the answer is the first option, just write "a".
+# If you think the answer is the second option, just write "b", and so on.
 
-question: {{ question["question"] }}
-options: {{ question["options"] }}
+# question: {{ question["question"] }}
+# options: {{ question["options"] }}
 
-chosen option (a, b, c, or d):
-"""
+# chosen option (a, b, c, or d):
+# """
 
-closed_book_answer_pipeline = Pipeline()
-closed_book_answer_pipeline.add_component(
-    "prompt_builder", PromptBuilder(template=closed_book_template)
-)
-closed_book_answer_pipeline.add_component(
-    "generator",
-    OpenAIGenerator(
-        api_key=Secret.from_env_var("GROQ_API_KEY"),
-        api_base_url="https://api.groq.com/openai/v1",
-        model="llama3-8b-8192",
-        generation_kwargs={"max_tokens": 5, "temperature": 0, "top_p": 1},
-    ),
-)
-closed_book_answer_pipeline.connect("prompt_builder", "generator")
+# closed_book_answer_pipeline = Pipeline()
+# closed_book_answer_pipeline.add_component(
+#     "prompt_builder", PromptBuilder(template=closed_book_template)
+# )
+# closed_book_answer_pipeline.add_component(
+#     "generator",
+#     OpenAIGenerator(
+#         api_key=Secret.from_env_var("GROQ_API_KEY"),
+#         api_base_url="https://api.groq.com/openai/v1",
+#         model="llama3-8b-8192",
+#         generation_kwargs={"max_tokens": 5, "temperature": 0, "top_p": 1},
+#     ),
+# )
+# closed_book_answer_pipeline.connect("prompt_builder", "generator")
 
 
-web_rag_template = """Answer the question about "{{topic}}", using your knowledge and the snippets extracted from the web.
+# web_rag_template = """Answer the question about "{{topic}}", using your knowledge and the snippets extracted from the web.
 
-In the answer, just specify the letter corresponding to the option.
-If you don't know the answer, just provide your best guess and do not provide any reasoning.
+# In the answer, just specify the letter corresponding to the option.
+# If you don't know the answer, just provide your best guess and do not provide any reasoning.
 
-For example, if you think the answer is the first option, just write "a".
-If you think the answer is the second option, just write "b", and so on.
+# For example, if you think the answer is the first option, just write "a".
+# If you think the answer is the second option, just write "b", and so on.
 
-question: {{ question["question"] }}
-options: {{ question["options"] }}
+# question: {{ question["question"] }}
+# options: {{ question["options"] }}
 
-Snippets:
-{% for doc in documents %}
-- snippet: "{{doc.content}}"
-{% endfor %}
+# Snippets:
+# {% for doc in documents %}
+# - snippet: "{{doc.content}}"
+# {% endfor %}
 
-chosen option (a, b, c, or d):
-"""
+# chosen option (a, b, c, or d):
+# """
 
-web_rag_pipeline = Pipeline()
-web_rag_pipeline.add_component("websearch", SerperDevWebSearch(top_k=3))
-web_rag_pipeline.add_component(
-    "prompt_builder", PromptBuilder(template=web_rag_template)
-)
-web_rag_pipeline.add_component(
-    "generator",
-    OpenAIGenerator(
-        api_key=Secret.from_env_var("GROQ_API_KEY"),
-        api_base_url="https://api.groq.com/openai/v1",
-        model="llama3-8b-8192",
-        generation_kwargs={"max_tokens": 5, "temperature": 0, "top_p": 1},
-    ),
-)
-web_rag_pipeline.connect("websearch.documents", "prompt_builder.documents")
-web_rag_pipeline.connect("prompt_builder", "generator")
+# web_rag_pipeline = Pipeline()
+# web_rag_pipeline.add_component("websearch", SerperDevWebSearch(top_k=3))
+# web_rag_pipeline.add_component(
+#     "prompt_builder", PromptBuilder(template=web_rag_template)
+# )
+# web_rag_pipeline.add_component(
+#     "generator",
+#     OpenAIGenerator(
+#         api_key=Secret.from_env_var("GROQ_API_KEY"),
+#         api_base_url="https://api.groq.com/openai/v1",
+#         model="llama3-8b-8192",
+#         generation_kwargs={"max_tokens": 5, "temperature": 0, "top_p": 1},
+#     ),
+# )
+# web_rag_pipeline.connect("websearch.documents", "prompt_builder.documents")
+# web_rag_pipeline.connect("prompt_builder", "generator")
