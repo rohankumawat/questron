@@ -30,3 +30,4 @@ export default function QuizQuestion({ question, options, onAnswer }: QuizQuesti
     </Card>
   )
 }
+
