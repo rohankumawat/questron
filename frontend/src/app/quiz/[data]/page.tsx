@@ -2,27 +2,30 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import QuizQuestion from '@/components/QuizQuestion'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertCircle } from 'lucide-react'
 import type { QuizData } from '@/types/quiz'
+import { SlidingWindow } from '@/components/SlidingWindow'
+import { Carousel } from '@/components/Carousel'
 
 export default function QuizPage() {
   const params = useParams()
   const router = useRouter()
   const [quizData, setQuizData] = useState<QuizData | null>(null)
-  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [showResults, setShowResults] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isQuizOpen, setIsQuizOpen] = useState(false)
 
   useEffect(() => {
     try {
       const parsedData = JSON.parse(decodeURIComponent(params.data as string))
       if (parsedData.topic && Array.isArray(parsedData.questions)) {
         setQuizData(parsedData)
+        setIsQuizOpen(true)
       } else {
         setError('Invalid quiz data structure')
       }
@@ -35,12 +38,13 @@ export default function QuizPage() {
   const handleAnswer = (selectedAnswer: string) => {
     if (!quizData) return
 
-    if (selectedAnswer.startsWith(quizData.questions[currentQuestion].right_option)) {
+    const currentQuestion = quizData.questions[currentQuestionIndex]
+    if (selectedAnswer.startsWith(currentQuestion.right_option)) {
       setScore(score + 1)
     }
 
-    if (currentQuestion + 1 < quizData.questions.length) {
-      setCurrentQuestion(currentQuestion + 1)
+    if (currentQuestionIndex + 1 < quizData.questions.length) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1)
     } else {
       setShowResults(true)
     }
@@ -65,26 +69,6 @@ export default function QuizPage() {
     return <div className="container mx-auto px-4 py-8">Loading...</div>
   }
 
-  if (showResults) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">Quiz Results</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-xl mb-4">
-              You scored {score} out of {quizData.questions.length}
-            </p>
-            <Button onClick={() => router.push('/')} className="mt-4">
-              Take Another Quiz
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="mb-8">
@@ -92,14 +76,24 @@ export default function QuizPage() {
           <CardTitle className="text-xl text-center">{quizData.topic}</CardTitle>
         </CardHeader>
       </Card>
-      <QuizQuestion
-        question={quizData.questions[currentQuestion].question}
-        options={quizData.questions[currentQuestion].options}
-        onAnswer={handleAnswer}
-      />
-      <p className="mt-4 text-center">
-        Question {currentQuestion + 1} of {quizData.questions.length}
-      </p>
+      <SlidingWindow isOpen={isQuizOpen}>
+        {showResults ? (
+          <div className="h-full flex flex-col items-center justify-center p-8">
+            <h2 className="text-2xl font-bold mb-4">Quiz Results</h2>
+            <p className="text-xl mb-8">
+              You scored {score} out of {quizData.questions.length}
+            </p>
+            <Button onClick={() => router.push('/')}>Take Another Quiz</Button>
+          </div>
+        ) : (
+          <Carousel 
+            questions={quizData.questions} 
+            onAnswer={handleAnswer}
+            currentQuestionIndex={currentQuestionIndex}
+          />
+        )}
+      </SlidingWindow>
     </div>
   )
 }
+
