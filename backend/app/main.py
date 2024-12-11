@@ -1,5 +1,6 @@
 import os
 os.environ["HAYSTACK_TELEMETRY_DISABLED"] = "true" # Disable usage statistics and telemetry (bcoz of AWS Lambda)
+os.environ["HAYSTACK_TELEMETRY_PATH"] = "/tmp/haystack" # Set the path for telemetry data (bcoz of AWS Lambda)
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
