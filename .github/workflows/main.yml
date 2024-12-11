@@ -40,7 +40,7 @@ jobs:
         with:
           path: venv # what we cache: the virtual environment
           # the cache key depends on the operating system and the content of requirements.txt
-          key: ${{ runner.os }}-venv-${{ hashFiles('backend/requirements*.txt') }}
+          key: ${{ runner.os }}-venv-${{ hashFiles('backend/requirements*.txt') }}-${{ github.run_id }} # cache key - ensures that the cache is unique
           restore-keys: |
             ${{ runner.os }}-venv-
 
