@@ -1,0 +1,67 @@
+name: Questron FastAPI CI/CD
+
+on:
+  # Trigger the workflow on push request to main branch
+  push:
+    branches:
+      # Push events on main branch
+      - main
+
+# The job defines a series of steps that are executed on the runner
+jobs:
+
+  CI:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+      
+      - name: Install python virtual environment
+        run: |
+          python -m pip install --upgrade pip
+          pip3 install virtualenv
+      
+      - name: Create virtual environment
+        uses: actions/cache@v2
+        id: cache-venv # id for caching
+        with:
+          path: venv # what we cache: the virtual environment
+          # the cache key depends on the operating system and the content of requirements.txt
+          key: ${{ runner.os }}-venv-${{ hashFiles('backend/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
+
+      # Create a virtual environment and activate it only if the cache is not found
+      - name: Activate virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip3 install -r backend/requirements.txt
+      
+      - name: Run Tests   
+        # Note that you have to activate the virtualenv in every step
+        # because GitHub actions doesn't preserve the environment   
+        run: . venv/bin/activate && pytest backend/  # Specify test location if needed
+
+      - name: Create archive of dependencies
+        run: |
+          cd ./venv/lib/python3.7/site-packages
+          zip -r9 ../../../../api.zip .
+
+      - name: Add API files to Zip file
+        run: cd ./backend && zip -g ../api.zip -r .  # Ensure API files are zipped from the backend folder
+
+      - name: Upload zip file artifact
+        # Upload the zip file as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: api
+          path: api.zip
