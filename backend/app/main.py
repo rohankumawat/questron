@@ -54,7 +54,7 @@ async def generate_quiz_endpoint(input: URLInput):
 
 # Root endpoint
 @app.get("/")
-def root():
+async def root():
     return {"message": "Welcome to the Quiz Generator API"}
 
 handler = Mangum(app=app)
