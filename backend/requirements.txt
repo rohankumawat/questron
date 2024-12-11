@@ -12,7 +12,6 @@ dateparser==1.2.0
 distro==1.9.0
 fastapi==0.115.6
 h11==0.14.0
-haystack==0.42
 haystack-ai==2.8.0
 haystack-experimental==0.3.0
 htmldate==1.9.2
