@@ -34,15 +34,15 @@ jobs:
           python -m pip install --upgrade pip
           pip3 install virtualenv
       
-      - name: Create virtual environment
-        uses: actions/cache@v4
-        id: cache-venv # id for caching
-        with:
-          path: venv # what we cache: the virtual environment
-          # the cache key depends on the operating system and the content of requirements.txt
-          key: ${{ runner.os }}-venv-${{ hashFiles('backend/requirements*.txt') }}-${{ github.run_id }} # cache key - ensures that the cache is unique
-          restore-keys: |
-            ${{ runner.os }}-venv-
+      # - name: Create virtual environment
+      #   uses: actions/cache@v4
+      #   id: cache-venv # id for caching
+      #   with:
+      #     path: venv # what we cache: the virtual environment
+      #     # the cache key depends on the operating system and the content of requirements.txt
+      #     key: ${{ runner.os }}-venv-${{ hashFiles('backend/requirements*.txt') }}-${{ github.run_id }} # cache key - ensures that the cache is unique
+      #     restore-keys: |
+      #       ${{ runner.os }}-venv-
 
       # Create a virtual environment and activate it only if the cache is not found
       - name: Activate virtual environment
