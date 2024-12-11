@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from backend.haystackpipeline.utils import generate_quiz # import the generate_quiz function
+from haystackpipeline.utils import generate_quiz # import the generate_quiz function
 
 # Create FastAPI instance
 app = FastAPI(
