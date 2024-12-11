@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from haystackpipeline.utils import generate_quiz # import the generate_quiz function
+from mangum import Mangum
 
 # Create FastAPI instance
 app = FastAPI(
@@ -55,3 +56,5 @@ async def generate_quiz_endpoint(input: URLInput):
 @app.get("/")
 def root():
     return {"message": "Welcome to the Quiz Generator API"}
+
+handler = Mangum(app=app)
