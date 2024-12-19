@@ -41,3 +41,8 @@ next-env.d.ts
 
 # Ensure the 'lib' folder is not ignored
 !lib
+
+# amplify
+.amplify
+amplify_outputs*
+amplifyconfiguration*
