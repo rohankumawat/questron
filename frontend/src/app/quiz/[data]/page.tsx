@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle, Check, X } from 'lucide-react'
+import { AlertCircle} from 'lucide-react'
 import type { QuizData } from '@/types/quiz'
 import { SlidingWindow } from '@/components/SlidingWindow'
 import { Carousel } from '@/components/Carousel'

@@ -41,18 +41,22 @@ export async function generateQuiz(url: string): Promise<QuizData> {
   }
 }
 
-function isValidQuizData(data: any): data is QuizData {
-  return (
+function isValidQuizData(data: unknown): data is QuizData {
+  if (
     typeof data === 'object' &&
-    typeof data.topic === 'string' &&
-    Array.isArray(data.questions) &&
-    data.questions.length > 0 &&
-    data.questions.every((q: any) =>
+    data !== null &&
+    typeof (data as QuizData).topic === 'string' &&
+    Array.isArray((data as QuizData).questions) &&
+    (data as QuizData).questions.length > 0 &&
+    (data as QuizData).questions.every((q: QuizData['questions'][number]) =>
       typeof q.question === 'string' &&
       Array.isArray(q.options) &&
-      q.options.every((o: any) => typeof o === 'string') &&
+      q.options.every((o: string) => typeof o === 'string') &&
       typeof q.right_option === 'string'
     )
-  )
+  ) {
+    return true;
+  }
+  return false;
 }
 
