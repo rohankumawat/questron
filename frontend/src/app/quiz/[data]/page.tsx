@@ -93,7 +93,7 @@ export default function QuizPage() {
     <div className={`min-h-screen ${isQuizOpen ? 'bg-[#f0f9ff]' : ''}`}>
       <SlidingWindow 
         isOpen={isQuizOpen} 
-        progress={progress}
+        // progress={progress}
         onClose={handleClose}
       >
         {showResults ? (
