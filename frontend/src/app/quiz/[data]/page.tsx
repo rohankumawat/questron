@@ -86,7 +86,7 @@ export default function QuizPage() {
     return <div className="container mx-auto px-4 py-8">Loading...</div>
   }
 
-  const progress = ((currentQuestionIndex + (showResults ? 1 : 0)) / quizData.questions.length) * 100
+  // const progress = ((currentQuestionIndex + (showResults ? 1 : 0)) / quizData.questions.length) * 100
   const score = answers.filter(a => a.isCorrect).length;
 
   return (
