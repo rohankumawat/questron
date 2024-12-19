@@ -23,7 +23,11 @@ export function UrlForm() {
       const quizData = await generateQuiz(url)
       router.push(`/quiz/${encodeURIComponent(JSON.stringify(quizData))}`)
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred')
+      let errorMessage = 'An unexpected error occurred. Please try again later.';
+      if (error instanceof Error) {
+        errorMessage = `Error: ${error.message}`;
+      }
+      setError(errorMessage);
       console.error('Error generating quiz:', error)
     } finally {
       setIsLoading(false)
