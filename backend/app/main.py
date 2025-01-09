@@ -31,15 +31,16 @@ app.add_middleware(
 
 class URLInput(BaseModel):
     url: str
+    number_of_questions: int = 5  # field for the number of questions
 
 @app.post("/generate-quiz", description="Generate a quiz from a given URL")
 async def generate_quiz_endpoint(input: URLInput):
     try:
         # Debugging: log the URL received
-        print(f"Received URL: {input.url}")
+        print(f"Received URL: {input.url}, Number of Questions: {input.number_of_questions}")
         
         # Call the generate_quiz function with the provided URL
-        quiz_data = generate_quiz(input.url)
+        quiz_data = generate_quiz(input.url, input.number_of_questions)
         
         # Debugging: log the quiz data
         print(f"Generated quiz: {quiz_data}")
