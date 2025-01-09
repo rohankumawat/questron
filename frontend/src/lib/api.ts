@@ -1,8 +1,8 @@
 import axios from 'axios'
 import type { QuizData } from '@/types/quiz'
 
-const API_BASE_URL = 'http://127.0.0.1:8000/generate-quiz'
-// const API_BASE_URL = 'https://0tm1dag2uk.execute-api.eu-west-2.amazonaws.com/Prod02/generate-quiz'
+// const API_BASE_URL = 'http://127.0.0.1:8000/generate-quiz'
+const API_BASE_URL = 'https://0tm1dag2uk.execute-api.eu-west-2.amazonaws.com/Prod03/generate-quiz'
 
 export async function generateQuiz(url: string, number_of_questions: number): Promise<QuizData> {
   try {
