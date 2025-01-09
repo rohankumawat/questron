@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 export function UrlForm() {
   const [url, setUrl] = useState('')
-  const [questionCount, setQuestionCount] = useState('5')
+  const [number_of_questions, setQuestionCount] = useState('5')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -22,7 +22,7 @@ export function UrlForm() {
     setIsLoading(true)
     setError(null)
     try {
-      const quizData = await generateQuiz(url, parseInt(questionCount))
+      const quizData = await generateQuiz(url, parseInt(number_of_questions))
       router.push(`/quiz/${encodeURIComponent(JSON.stringify(quizData))}`)
     } catch (error) {
       let errorMessage = 'An unexpected error occurred. Please try again later.';
@@ -64,7 +64,7 @@ export function UrlForm() {
             <label htmlFor="questionCount" className="text-sm text-[#0369a1] dark:text-[#7dd3fc]">
               Number of questions:
             </label>
-            <Select value={questionCount} onValueChange={setQuestionCount}>
+            <Select value={number_of_questions} onValueChange={setQuestionCount}>
               <SelectTrigger className="w-[100px]">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
