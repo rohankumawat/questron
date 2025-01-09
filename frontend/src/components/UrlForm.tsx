@@ -8,9 +8,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, Loader2, Link } from 'lucide-react'
 import { generateQuiz } from '@/lib/api'
 import { motion } from 'framer-motion'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export function UrlForm() {
   const [url, setUrl] = useState('')
+  const [questionCount, setQuestionCount] = useState('5')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -20,7 +22,7 @@ export function UrlForm() {
     setIsLoading(true)
     setError(null)
     try {
-      const quizData = await generateQuiz(url)
+      const quizData = await generateQuiz(url, parseInt(questionCount))
       router.push(`/quiz/${encodeURIComponent(JSON.stringify(quizData))}`)
     } catch (error) {
       let errorMessage = 'An unexpected error occurred. Please try again later.';
@@ -57,6 +59,23 @@ export function UrlForm() {
               required
               className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-[#0c4a6e] dark:text-[#e0f2fe]"
             />
+          </div>
+          <div className="flex flex-col items-center space-y-2">
+            <label htmlFor="questionCount" className="text-sm text-[#0369a1] dark:text-[#7dd3fc]">
+              Number of questions:
+            </label>
+            <Select value={questionCount} onValueChange={setQuestionCount}>
+              <SelectTrigger className="w-[100px]">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                {[3, 5, 7, 9, 11, 13, 15].map((count) => (
+                  <SelectItem key={count} value={count.toString()}>
+                    {count}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <Button 
             type="submit" 
