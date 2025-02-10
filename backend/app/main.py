@@ -16,6 +16,15 @@ app = FastAPI(
     version="0.1"
 )
 
+# Allowed models
+AVAILABLE_MODELS = {
+    "llama3-8b-8192": "llama3-8b-8192",  # Default model
+    "deepseek-r1-distill-llama-70b": "deepseek-r1-distill-llama-70b",
+    "gemma2-9b-it": "gemma2-9b-it",
+    "llama-3.3-70b-versatile": "llama-3.3-70b-versatile",
+    "mistral-8x7b-32768": "mistral-8x7b-32768",
+}
+
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
@@ -32,15 +41,20 @@ app.add_middleware(
 class URLInput(BaseModel):
     url: str
     number_of_questions: int = 5  # field for the number of questions
+    model: str = "llama3-8b-8192"  # field for the model to use (default model)
 
 @app.post("/generate-quiz", description="Generate a quiz from a given URL")
 async def generate_quiz_endpoint(input: URLInput):
     try:
         # Debugging: log the URL received
-        print(f"Received URL: {input.url}, Number of Questions: {input.number_of_questions}")
+        print(f"Received URL: {input.url}, Number of Questions: {input.number_of_questions}, Model: {input.model}")
+        
+        # Validate model selection
+        if input.model not in AVAILABLE_MODELS:
+            raise HTTPException(status_code=400, detail=f"Invalid model. Available models: {AVAILABLE_MODELS}")
         
         # Call the generate_quiz function with the provided URL
-        quiz_data = generate_quiz(input.url, input.number_of_questions)
+        quiz_data = generate_quiz(input.url, input.number_of_questions, input.model)
         
         # Debugging: log the quiz data
         print(f"Generated quiz: {quiz_data}")

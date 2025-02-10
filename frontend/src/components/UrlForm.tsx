@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export function UrlForm() {
   const [url, setUrl] = useState('')
   const [number_of_questions, setQuestionCount] = useState('5')
+  const [model, setModel] = useState('llama3-8b-8192')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -22,7 +23,7 @@ export function UrlForm() {
     setIsLoading(true)
     setError(null)
     try {
-      const quizData = await generateQuiz(url, parseInt(number_of_questions))
+      const quizData = await generateQuiz(url, parseInt(number_of_questions), model)
       router.push(`/quiz/${encodeURIComponent(JSON.stringify(quizData))}`)
     } catch (error) {
       let errorMessage = 'An unexpected error occurred. Please try again later.';
@@ -74,6 +75,24 @@ export function UrlForm() {
                     {count}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {/* AI Model Selection */}
+          <div className="flex flex-col items-center space-y-2">
+            <label htmlFor="model" className="text-sm text-[#0369a1] dark:text-[#7dd3fc]">
+              AI Model:
+            </label>
+            <Select value={model} onValueChange={setModel}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select AI Model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="llama3-8b-8192">Llama 3 (Default)</SelectItem>
+                <SelectItem value="deepseek-r1-distill-llama-70b">DeepSeek 70B</SelectItem>
+                <SelectItem value="gemma2-9b-it">Gemma2-9B</SelectItem>
+                <SelectItem value="llama-3.3-70b-versatile">Llama 3.3-70B</SelectItem>
+                <SelectItem value="mistral-8x7b-32768">Mistral 8x7B</SelectItem>
               </SelectContent>
             </Select>
           </div>

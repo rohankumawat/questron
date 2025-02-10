@@ -4,10 +4,10 @@ import type { QuizData } from '@/types/quiz'
 // const API_BASE_URL = 'http://127.0.0.1:8000/generate-quiz'
 const API_BASE_URL = 'https://0tm1dag2uk.execute-api.eu-west-2.amazonaws.com/Prod03/generate-quiz'
 
-export async function generateQuiz(url: string, number_of_questions: number): Promise<QuizData> {
+export async function generateQuiz(url: string, number_of_questions: number, model: string): Promise<QuizData> {
   try {
     console.log('Sending request to:', API_BASE_URL)
-    const response = await axios.post(API_BASE_URL, { url, number_of_questions }, {
+    const response = await axios.post(API_BASE_URL, { url, number_of_questions, model }, {
       headers: {
         'Content-Type': 'application/json',
       },

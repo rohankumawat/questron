@@ -1,9 +1,9 @@
-from .pipelines import quiz_generation_pipeline
+from .pipelines import create_quiz_generation_pipeline
 from typing import Dict, Any, List, Tuple
 import random
 
 
-def generate_quiz(url: str, number_of_questions: int) -> Dict[str, Any]:
+def generate_quiz(url: str, number_of_questions: int, model: str = "llama3-8b-8192") -> Dict[str, Any]:
     """
     Generates a quiz from the given URL with the specified number of questions.
     
@@ -14,6 +14,8 @@ def generate_quiz(url: str, number_of_questions: int) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: A dictionary representing the quiz.
     """
+
+    quiz_generation_pipeline = create_quiz_generation_pipeline(model)  # Use selected model
 
     return quiz_generation_pipeline.run(
         {
